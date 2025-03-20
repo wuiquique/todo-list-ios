@@ -13,7 +13,7 @@ struct CreateProject: View {
         VStack {
             Spacer()
             Rectangle()
-                .frame(width: .infinity, height: (projectsViewModel.projects.filter({ $0.name == "Daily Tasks" }).count == 0) ? 300 : 250)
+                .frame(width: .infinity, height: (projectsViewModel.projects.filter({ $0.name == "Daily Tasks" }).count == 0) ? 400 : 350)
                 .background(.ultraThinMaterial)
                 .cornerRadius(30)
                 .overlay {
@@ -35,7 +35,10 @@ struct CreateProject: View {
                         .padding()
                         
                         Spacer()
-                                                
+                                
+                        Text("New Project")
+                            .foregroundColor(.invert)
+                            .font(.system(size: 40, weight: .heavy, design: .monospaced))
                         TextFieldComponent(placeholder: "House Chores", textVariable: $name, label: "Project Name", invertColors: true)
                         ButtonBadge(
                             title: "Create Project",
