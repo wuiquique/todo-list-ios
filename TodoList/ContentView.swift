@@ -1,24 +1,22 @@
-//
-//  ContentView.swift
-//  TodoList
-//
-//  Created by Luis Menendez on 5/03/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("userId") var currentUserId: Int?
+    @AppStorage("name") var currentName: String?
+    @AppStorage("username") var currentUsername: String?
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            if currentUsername != nil && currentUserId != nil && currentName != nil {
+                Home()
+            } else {
+                Login()
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
 }
+
