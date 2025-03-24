@@ -7,6 +7,8 @@ struct CreateProject: View {
     @EnvironmentObject private var projectsViewModel: ProjectViewModel
     @AppStorage("userId") var currentUserId: Int?
     
+    @State private var showNameError: Bool = false
+    
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -30,17 +32,18 @@ struct CreateProject: View {
             Text("New Project")
                 .foregroundColor(.primary)
                 .font(.system(size: 40, weight: .heavy, design: .monospaced))
-            TextFieldComponent(placeholder: "House Chores", textVariable: $name, label: "Project Name", topPadding: 0.5)
+            TextFieldComponent(
+                placeholder: "House Chores",
+                textVariable: $name,
+                label: "Project Name",
+                showError: showNameError,
+                errorMessage: "Project name cannot be empty",
+                resetError: { showNameError = false },
+                topPadding: 0.5
+            )
             ButtonBadge(
                 title: "Create Project",
-                action: {
-                    Task {
-                        await projectsViewModel.createProject(name: name, userId: currentUserId ?? 0)
-                        withAnimation(.spring) {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                },
+                action: { createProject() },
                 textColor: .invert,
                 strokeColor: .primary.opacity(0.3),
                 fillColor: .primary.opacity(0.9),
@@ -68,6 +71,21 @@ struct CreateProject: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+extension CreateProject {
+    func createProject() {
+        if name.isEmpty {
+            showNameError = true
+            return
+        }
+        Task {
+            await projectsViewModel.createProject(name: name, userId: currentUserId ?? 0)
+            withAnimation(.spring) {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
     }
 }
 

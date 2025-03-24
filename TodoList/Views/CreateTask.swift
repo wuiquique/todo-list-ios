@@ -23,6 +23,9 @@ struct CreateTask: View {
     @State private var projectName: String = ""
     @State private var taskTitle: String = ""
     
+    @State private var taskError: Bool = false
+    @State private var projectError: Bool = false
+    
     @EnvironmentObject private var projectsViewModel: ProjectViewModel
     
     @AppStorage("userId") var currentUserId: Int?
@@ -62,17 +65,13 @@ struct CreateTask: View {
             )
             .padding(.leading)
             if showNewProject {
-                TextField("Project name", text: $projectName)
-                    .padding()
-                    .multilineTextAlignment(.leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.primary.opacity(0.3), lineWidth: 1)
-                    )
-                    .padding(.top, 4)
-                    .padding(.horizontal)
-                    .transition(.move(edge: .trailing))
-                    .animation(.spring(), value: showNewProject)
+                TextFieldComponent(
+                    placeholder: "Project name",
+                    textVariable: $projectName,
+                    showError: projectError,
+                    errorMessage: "Project name can't be empty",
+                    resetError: { projectError = false }
+                ).padding(.horizontal)
             }
             Text("Task".uppercased())
                 .kerning(2)
@@ -80,14 +79,13 @@ struct CreateTask: View {
                 .font(.headline)
                 .foregroundColor(.primary.opacity(0.7))
                 .padding(.leading)
-            TextField("Task title", text: $taskTitle)
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke(Color.primary.opacity(0.3), lineWidth: 1)
-                )
-                .padding(.horizontal)
-                .multilineTextAlignment(.leading)
+            TextFieldComponent(
+                placeholder: "Task title",
+                textVariable: $taskTitle,
+                showError: taskError,
+                errorMessage: "Task title can't be empty",
+                resetError: { taskError = false }
+            ).padding(.horizontal)
             Spacer()
             ButtonBadge(
                 title: "Create",
@@ -106,14 +104,22 @@ struct CreateTask: View {
 extension CreateTask {
     func callCreation() {
         if showNewProject {
+            if projectName.isEmpty {
+                projectError = true
+                return
+            }
             presentationMode.wrappedValue.dismiss()
             Task {
                 await projectsViewModel.createTaskNewProyect(projectName: projectName, userId: currentUserId ?? 0, taskTitle: taskTitle, due: date)
             }
         } else {
-            createTask(taskTitle, false, date, selectedProject ?? currentProject)
+            if taskTitle.isEmpty {
+                taskError = true
+                return
+            }
             presentationMode.wrappedValue.dismiss()
             Task {
+                createTask(taskTitle, false, date, selectedProject ?? currentProject)
                 await projectsViewModel.fetchProjects(userId: currentUserId ?? 0)
             }
         }
