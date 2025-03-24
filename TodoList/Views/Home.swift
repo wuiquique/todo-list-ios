@@ -6,7 +6,7 @@ struct Home: View {
     
     @State private var detailID: Int?
     @State private var showDetail: Bool = false
-    @State private var showCreateProject: Bool = true
+    @State private var showCreateProject: Bool = false
     
     @StateObject private var projectsViewModel: ProjectViewModel = .init()
     
