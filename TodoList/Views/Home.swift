@@ -6,7 +6,7 @@ struct Home: View {
     
     @State private var detailID: Int?
     @State private var showDetail: Bool = false
-    @State private var showCreateProject: Bool = false
+    @State private var showCreateProject: Bool = true
     
     @StateObject private var projectsViewModel: ProjectViewModel = .init()
     
@@ -64,9 +64,9 @@ struct Home: View {
                     await projectsViewModel.fetchProjects(userId: currentUserId ?? 0)
                 }
             }
-            if showCreateProject {
-                CreateProject(show: $showCreateProject)
-                    .transition(.move(edge: .bottom))
+            .sheet(isPresented: $showCreateProject) {
+                CreateProject()
+                    .presentationDetents([.height((projectsViewModel.projects.filter({ $0.name == "Daily Tasks" }).count == 0) ? 370 : 320)])
             }
         }
         .environmentObject(projectsViewModel)

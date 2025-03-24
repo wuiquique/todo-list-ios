@@ -16,12 +16,12 @@ struct TextFieldComponent: View {
     let showError: Bool?
     let errorMessage: String?
     let resetError: () -> Void?
-    let invertColors: Bool?
+    let topPadding: CGFloat?
     
     @State private var shakeOffset: CGFloat = 0
     @State private var textEditing: Bool = false
     
-    init(placeholder: String, textVariable: Binding<String>, noStartingCapitalization: Bool = false, label: String? = nil, showError: Bool = false, errorMessage: String = "", resetError: @escaping () -> Void = { }, invertColors: Bool = false) {
+    init(placeholder: String, textVariable: Binding<String>, noStartingCapitalization: Bool = false, label: String? = nil, showError: Bool = false, errorMessage: String = "", resetError: @escaping () -> Void = { }, topPadding: CGFloat? = nil) {
         self.placeholder = placeholder
         self._textVariable = textVariable
         self.noStartingCapitalization = noStartingCapitalization
@@ -29,7 +29,7 @@ struct TextFieldComponent: View {
         self.showError = showError
         self.errorMessage = errorMessage
         self.resetError = resetError
-        self.invertColors = invertColors
+        self.topPadding = topPadding
     }
     
     var body: some View {
@@ -37,17 +37,17 @@ struct TextFieldComponent: View {
             if let label = label {
                 Text(label.uppercased())
                     .kerning(2)
-                    .padding(.top)
+                    .padding(.top, topPadding ?? nil)
                     .font(.caption)
-                    .foregroundColor(invertColors ?? false ? .invert.opacity(0.7) : .primary.opacity(0.7))
+                    .foregroundColor(.primary.opacity(0.7))
                     .padding(.leading)
             }
             TextField(placeholder, text: $textVariable)
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 30)
-                        .stroke(showError ?? false ? Color.red : invertColors ?? false ? Color.invert.opacity(0.3) : Color.primary.opacity(0.3), lineWidth: 1)
-                        .fill(invertColors ?? false ? .invert.opacity(0.7) : .clear)
+                        .stroke(showError ?? false ? Color.red : Color.primary.opacity(0.3), lineWidth: 1)
+                        .fill(.clear)
                 )
                 .multilineTextAlignment(.leading)
                 .textInputAutocapitalization(noStartingCapitalization ? .never : nil)
