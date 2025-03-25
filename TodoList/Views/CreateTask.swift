@@ -71,7 +71,10 @@ struct CreateTask: View {
                     showError: projectError,
                     errorMessage: "Project name can't be empty",
                     resetError: { projectError = false }
-                ).padding(.horizontal)
+                )
+                .padding(.horizontal)
+                .transition(.move(edge: .trailing))
+                .animation(.spring, value: showNewProject)
             }
             Text("Task".uppercased())
                 .kerning(2)
