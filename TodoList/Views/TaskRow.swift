@@ -5,6 +5,7 @@ struct TaskRow: View {
     let isCompleted: Bool
     let id: Int
     let projectId: Int
+    let due: String
     
     @EnvironmentObject private var taskViewModel: TaskViewModel
     @EnvironmentObject private var projectsViewModel: ProjectViewModel
@@ -31,16 +32,21 @@ struct TaskRow: View {
                     }
             }
             .padding(.trailing, 8)
-            Text(title)
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundColor(isCompleted ? .primary.opacity(0.3) : .primary)
-                .strikethrough(isCompleted)
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(isCompleted ? .primary.opacity(0.3) : .primary)
+                    .strikethrough(isCompleted)
+                if !isCompleted {
+                    Text(due).foregroundColor(.secondary)
+                }
+            }
         }
         .padding(.vertical, 8)
     }
 }
 
 #Preview {
-    TaskRow(title: "Test", isCompleted: true, id: 1, projectId: 1)
+    TaskRow(title: "Test", isCompleted: true, id: 1, projectId: 1, due: "asdf")
 }

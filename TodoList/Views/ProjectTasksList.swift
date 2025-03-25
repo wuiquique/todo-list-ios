@@ -47,13 +47,13 @@ struct ProjectTasksList: View {
                         EditButton().foregroundColor(Color(isDaily ? "Main" : "Accent"))
                         
                         ForEach(taskViewModel.tasks.filter { !$0.isCompleted }) { task in
-                            TaskRow(title: task.title, isCompleted: task.isCompleted, id: task.id, projectId: id)
+                            TaskRow(title: task.title, isCompleted: task.isCompleted, id: task.id, projectId: id, due: task.due)
                         }
                         .onDelete {indexSet in deleteTask(indexSet: indexSet)}
                     }).listRowSeparator(.hidden)
                     Section("Completed (\(taskViewModel.tasks.filter(\.isCompleted).count))") {
                         ForEach(taskViewModel.tasks.filter(\.isCompleted)) { task in
-                            TaskRow(title: task.title, isCompleted: task.isCompleted, id: task.id, projectId: id)
+                            TaskRow(title: task.title, isCompleted: task.isCompleted, id: task.id, projectId: id, due: task.due)
                         }
                     }.listRowSeparator(.hidden)   
                 }
